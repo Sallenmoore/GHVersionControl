@@ -1,0 +1,11 @@
+version: "3"
+
+services:
+  github:
+    build: .
+    working_dir: /var/app
+    env_file: .env
+    container_name: github
+    volumes:
+      - ./:/var/app/
+    command: ["python3", "main.py"]

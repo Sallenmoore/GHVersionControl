@@ -1,8 +1,12 @@
-from .GHCallbacks import GHRemoteCallbacks
+from GHCallbacks import GHRemoteCallbacks
 
 import pygit2
 import shutil
 import os
+
+import logging
+logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
+log = logging.getLogger(__name__)
 
 class Repository:
 
@@ -14,6 +18,7 @@ class Repository:
             repo (_type_, optional): _description_. Defaults to None.
             path (str, optional): _description_. Defaults to "./".
         """
+        self.github = repo
         self.dir = path
         self.path = f'{path}/{repo.name}'
         if not os.path.exists(self.path):
@@ -40,6 +45,24 @@ class Repository:
                     os.mkdir(f"{dest_path}{dir}")
                 dest_path = f"{dest_path}{dir}/"
             shutil.copyfile(src, f"{dest_path}{dest.split('/')[-1]}")
+
+    def delete_files(self, file_paths):
+        # f"{doc_dir}/client_update.md", dest=f"planning/sprints/sprint{sprint}"
+        """
+        deletes file from a path to this repository in the given path
+
+        Args:
+            file_path - from repo root
+        """
+        for file_path in file_paths:
+            delete_path = f"{self.path}/{file_path}"
+            log.info(delete_path)
+            if os.path.isfile(delete_path):
+                os.remove(delete_path)
+            elif os.path.isdir(delete_path):
+                shutil.rmtree(delete_path)
+            else:
+                print("file not found")
 
     def pull(self, remote_name='origin', branch='main'):
         """

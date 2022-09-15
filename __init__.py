@@ -1,3 +1,3 @@
-from .GHRepo import Repository
-from .GHCallbacks import GHRemoteCallbacks
-from .GHOrganization import GHOrganization
+from GHRepo import Repository
+from GHCallbacks import GHRemoteCallbacks
+from GHOrganization import GHOrganization

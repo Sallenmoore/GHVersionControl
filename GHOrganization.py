@@ -1,8 +1,11 @@
 import github
 import os
-from dotenv import load_dotenv, dotenv_values
 
-from lib.version_control import Repository
+from GHRepo import Repository
+
+import logging
+logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
+log = logging.getLogger(__name__)
 
 class GHOrganization:
 
@@ -21,7 +24,7 @@ class GHOrganization:
         #print(vars(self), os.getenv('GITHUB_PAT'))
         if self.token and self.org:
             self.g = github.Github(self.token)
-            self.org = self.g.get_organization(self.org) if self.org else None
+            self.org = self.g.get_organization(self.org)
         self.repositories = []
 
     def get_repos(self, destination = "./", search=""):
@@ -29,6 +32,8 @@ class GHOrganization:
         _summary_
         """
         for repo in self.org.get_repos():
-            if search in repo.name:
+            if search.lower() in repo.name.lower():
+                log.info(f"cloning {repo.name}...")
                 self.repositories.append(Repository(repo, destination))
+                log.info(f"...completed")
         return self.repositories
